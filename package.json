@@ -11,6 +11,11 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
+		"@deck.gl/carto": "^9.0.34",
+		"@deck.gl/core": "^9.0.34",
+		"@deck.gl/geo-layers": "^9.0.34",
+		"@deck.gl/layers": "^9.0.34",
+		"maplibre-gl": "^4.7.1",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
