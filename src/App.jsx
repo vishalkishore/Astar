@@ -6,6 +6,7 @@ function App() {
 
   return (
     <>
+      <h1 className="z-10 absolute font-semibold decoration-sky-500">True Map</h1>
       <Map />
     </>
   );

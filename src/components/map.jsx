@@ -35,8 +35,54 @@ export default function Map() {
   const [loading, setLoading] = useState(false);
   const [fadeRadiusReverse, setFadeRadiusReverse] = useState(false);
   const fadeRadius = useRef();
+  const ui = useRef();
   const selectionRadiusOpacity = useSmoothStateChange(0, 0, 1, 400, fadeRadius.current, fadeRadiusReverse);
   const [colors, setColors] = useState(INITIAL_COLORS);
+
+  function showSnackbar(message, type) {
+    if (ui.current) {
+      ui.current.classList.add(
+        'fixed',
+        'bottom-4',
+        'left-1/2',
+        '-translate-x-1/2',
+        'bg-gray-800',
+        'text-white',
+        'px-4',
+        'py-2',
+        'rounded-md',
+        'shadow-lg',
+        'transition-opacity',
+        'duration-300',
+        'z-10',
+        type === 'info' ? 'bg-blue-500' : 'bg-red-500'
+      );
+      ui.current.textContent = message;
+      setTimeout(() => {
+        ui.current.classList.add('opacity-0');
+        setTimeout(() => {
+          ui.current.classList.remove(
+            'fixed',
+            'bottom-4',
+            'left-1/2',
+            '-translate-x-1/2',
+            'bg-gray-800',
+            'text-white',
+            'px-4',
+            'py-2',
+            'rounded-md',
+            'shadow-lg',
+            'transition-opacity',
+            'duration-300',
+            'bg-blue-500',
+            'bg-red-500',
+            'opacity-0',
+            'z-10',
+          );
+        }, 300);
+      }, 3000);
+    }
+  }
 
   async function mapClick(e, info, radius = null) {
     setFadeRadiusReverse(false);
@@ -46,12 +92,13 @@ export default function Map() {
     // Place end node
     if (info.rightButton) {
       if (e.layer?.id !== "selection-radius") {
-        console.log("Please select a point inside the radius.", "info");
+        alert("No path was found in the vicinity, please try another location.");
+        console.log("No path was found in the vicinity, please try another location.");
         return;
       }
 
       if (loading) {
-        console.log("Please wait for all data to load.", "info");
+        alert("Please wait for all data to load.", "info");
         return;
       }
 
@@ -61,7 +108,7 @@ export default function Map() {
 
       const node = await getNearestNode(e.coordinate[1], e.coordinate[0]);
       if (!node) {
-        console.log("No path was found in the vicinity, please try another location.");
+        alert("No path was found in the vicinity, please try another location.");
         clearTimeout(loadingHandle);
         setLoading(false);
         return;
@@ -73,7 +120,7 @@ export default function Map() {
       setLoading(false);
 
       // if(!realEndNode) {
-      //     console.log("An error occurred. Please try again.");
+      //     alert("An error occurred. Please try again.");
       //     return;
       // }
       // state.current.endNode = realEndNode;
@@ -88,7 +135,7 @@ export default function Map() {
     // Fectch nearest node
     const node = await getNearestNode(e.coordinate[1], e.coordinate[0]);
     if (!node) {
-      console.log("No path was found in the vicinity, please try another location.");
+      alert("No path was found in the vicinity, please try another location.");
       clearTimeout(loadingHandle);
       setLoading(false);
       return;
@@ -122,17 +169,32 @@ export default function Map() {
       ...viewState,
       longitude: location.longitude,
       latitude: location.latitude,
-      zoom: 13,
+      zoom: 14.5,
       transitionDuration: 1,
       transitionInterpolator: new FlyToInterpolator(),
     });
   }
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((res) => {
-      changeLocation(res.coords);
-    });
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (res) => {
+          changeLocation(res.coords);
+        },
+        (err) => {
+          console.error("Error getting location: ", err.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0, 
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
   }, []);
+  
 
   return (
     <>
