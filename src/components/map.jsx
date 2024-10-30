@@ -13,12 +13,12 @@ import { fetchOverpassData } from "../utils/api";
 
 const MAP_STYLE = "./map_style.json";
 const INITIAL_COLORS = {
-    startNodeFill: [70, 183, 128],
-    startNodeBorder: [255, 255, 255],
-    endNodeFill: [152, 4, 12],
-    endNodeBorder: [0, 0, 0],
-    path: [70, 183, 128],
-    route: [165, 13, 32],
+  startNodeFill: [70, 183, 128],
+  startNodeBorder: [255, 255, 255],
+  endNodeFill: [152, 4, 12],
+  endNodeBorder: [0, 0, 0],
+  path: [70, 183, 128],
+  route: [165, 13, 32],
 };
 
 export default function Map() {
@@ -94,7 +94,7 @@ export default function Map() {
       return;
     }
 
-	console.log(node,e.coordinate);
+    console.log(node, e.coordinate);
 
     setStartNode(node);
     setEndNode(null);
@@ -116,6 +116,23 @@ export default function Map() {
     //     setLoading(false);
     // });
   }
+
+  function changeLocation(location) {
+    setViewState({
+      ...viewState,
+      longitude: location.longitude,
+      latitude: location.latitude,
+      zoom: 13,
+      transitionDuration: 1,
+      transitionInterpolator: new FlyToInterpolator(),
+    });
+  }
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((res) => {
+      changeLocation(res.coords);
+    });
+  }, []);
 
   return (
     <>
