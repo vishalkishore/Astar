@@ -10,7 +10,7 @@ include_directories(/usr/local/include)
 find_package(Crow REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
-add_executable(crow_app main.cpp)
+add_executable(crow_app src/main.cpp)
 
 target_link_libraries(crow_app PRIVATE 
     Crow::Crow

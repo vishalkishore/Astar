@@ -8,7 +8,9 @@ services:
     volumes:
       - ./backend:/app
       - backend_build:/app/build
-    command: ./build/crow_app
+    environment:
+      - PORT=8080
+    # No need for command override since it's in the dev script
 
   frontend:
     build:
@@ -19,6 +21,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8080
     command: npm run dev
     depends_on:
       - backend
