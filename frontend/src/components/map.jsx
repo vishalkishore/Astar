@@ -7,7 +7,7 @@ import { TripsLayer } from "@deck.gl/geo-layers";
 import { createGeoJSONCircle } from "../utils/helpers";
 import { getBoundingBoxFromPolygon, getMapGraph, getNearestNode } from "../services/MapService";
 import { useEffect, useRef, useState } from "react";
-import "../../public/maplibre-gl.css";
+// import "../../public/maplibre-gl.css";
 import useSmoothStateChange from "../hooks/useSmoothStateChange";
 import { fetchOverpassData } from "../utils/api";
 
@@ -261,6 +261,7 @@ export default function Map() {
           <MapGL reuseMaps mapLib={maplibregl} mapStyle="./map_style.json" doubleClickZoom={false} />
         </DeckGL>
       </div>
+      {/* <div className="fixed z-10 top-5">Book A Ride</div> */}
     </>
   );
 }
